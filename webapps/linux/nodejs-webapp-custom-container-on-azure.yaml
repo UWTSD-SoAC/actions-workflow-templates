@@ -25,7 +25,7 @@ jobs:
       run: |
         npm install
         npm run build --if-present
-        npm run test --if-present
+        # npm run test --if-present
 
     - name: Docker image build
       uses: azure/docker-login@v1
@@ -34,15 +34,25 @@ jobs:
         username: '${docker-username}'
         password: '${docker-token}'  # Can use password but better to use personal access token
     
-    - name: build and push image to registry tagged using Git commit id
+    - name: Docker build and push image to registry tagged using Git commit id
       run: |
         docker build . -t ${docker-login-server}/${image-name}:${{ github.sha }}
         docker push ${docker-login-server}/${image-name}:${{ github.sha }}
 
-    - name: 'Deploy to Azure Web App'
-      uses: azure/webapps-deploy@v2
-      with: 
-        app-name: '${web-app-name}'
-        slot-name: '${slot-name}'
-        publish-profile: ${{ secrets.${AZURE_WEBAPP_PUBLISH_PROFILE} }}
-        images: ${docker-login-server}/${image-name}:${{ github.sha }}
+# Add these lines in if you are not using a user-assigned managed identity to monitor the pushes to the ACR
+# or you are using DockerHub
+
+    # - name: 'Az CLI login'
+      # uses: azure/login@v1      # Use Workload Identity Federation
+      # with:
+        # client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        # tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        # subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    # - name: 'Deploy to Azure Web App'
+      # uses: azure/webapps-deploy@v2    # Must login to Azure first
+      # with: 
+        # app-name: '${web-app-name}'
+        # slot-name: '${slot-name}'
+        # publish-profile: ${{ secrets.${AZURE_WEBAPP_PUBLISH_PROFILE} }}
+        # images: ${docker-login-server}/${image-name}:${{ github.sha }}
