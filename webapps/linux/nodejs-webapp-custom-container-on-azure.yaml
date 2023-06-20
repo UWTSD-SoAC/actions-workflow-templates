@@ -36,8 +36,11 @@ jobs:
     
     - name: Docker build and push image to registry tagged using Git commit id
       run: |
-        docker build . -t ${docker-login-server}/${image-name}:${{ github.sha }}
-        docker push ${docker-login-server}/${image-name}:${{ github.sha }}
+        docker image build -t ${image-name} .
+        docker image tag ${image-name} ${docker-login-server}/${image-name}:${{ github.sha }}
+        docker image push ${docker-login-server}/${image-name}:${{ github.sha }}
+        docker image tag ${image-name} ${docker-login-server}/${image-name}:latest
+        docker image push ${docker-login-server}/${image-name}:latest
 
 # Add these lines in if you are not using a user-assigned managed identity to monitor the pushes to the ACR
 # or you are using DockerHub
