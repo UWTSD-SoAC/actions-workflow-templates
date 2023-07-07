@@ -24,9 +24,9 @@ jobs:
     - name: 'Az CLI login'
       uses: azure/login@v1
       with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        client-id: ${client-id}
+        tenant-id: ${tenant-id}
+        subscription-id: ${subscription-id}
 
 
     - name: Set up Node.js version
@@ -42,16 +42,16 @@ jobs:
 
     - name: ACR build and push image
       run: |
-        az acr build --image ${{ secrets.ACR_SERVER }}/${image-name}:${{ github.sha }} \
-        --registry ${{ secrets.ACR_SERVER }} --file "Dockerfile" --target ${image-build-target} .
+        az acr build --image ${acr-registry}/${image-name}:${{ github.sha }} \
+        --registry ${acr-registry} --file "Dockerfile" --target ${image-build-target} .
 
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v2    # Must login to Azure first
       with: 
         app-name: '${web-app-name}'
         slot-name: '${slot-name}'
-        publish-profile: ${{ secrets.${AZURE_WEBAPP_PUBLISH_PROFILE} }}
-        images: ${{ secrets.ACR_SERVER }}/${image-name}}:${{ github.sha }}
+        publish-profile: ${webapp-publisher-profile}
+        images: ${acr-registry}/${image-name}}:${{ github.sha }}
 
     - name: Azure logout
       run: |
