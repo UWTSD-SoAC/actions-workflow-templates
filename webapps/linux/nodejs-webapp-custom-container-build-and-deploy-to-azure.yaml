@@ -42,7 +42,7 @@ jobs:
 
     - name: ACR build and push image
       run: |
-        az acr build --image ${{ secrets.ACR_SERVER }}/${web-app-name}:${{ github.sha }} \
+        az acr build --image ${{ secrets.ACR_SERVER }}/${image-name}:${{ github.sha }} \
         --registry ${{ secrets.ACR_SERVER }} --file "Dockerfile" --target ${image-build-target} .
 
     - name: 'Deploy to Azure Web App'
@@ -51,7 +51,7 @@ jobs:
         app-name: '${web-app-name}'
         slot-name: '${slot-name}'
         publish-profile: ${{ secrets.${AZURE_WEBAPP_PUBLISH_PROFILE} }}
-        images: ${{ secrets.ACR_SERVER }}/${web-app-name}}:${{ github.sha }}
+        images: ${{ secrets.ACR_SERVER }}/${image-name}}:${{ github.sha }}
 
     - name: Azure logout
       run: |
