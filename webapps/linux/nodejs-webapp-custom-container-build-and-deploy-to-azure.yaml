@@ -43,7 +43,7 @@ jobs:
     - name: ACR build and push image
       run: |
         az acr build --image ${acr-registry}/${image-name}:${{ github.sha }} \
-        --registry ${acr-registry} --file "Dockerfile" --target ${image-build-target} .
+          --registry ${acr-registry} --file "Dockerfile" --target ${image-build-target} .
 
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v2    # Must login to Azure first
