@@ -24,9 +24,9 @@ jobs:
     - name: 'Az CLI login'
       uses: azure/login@v1
       with:
-        client-id: ${client-id}
-        tenant-id: ${tenant-id}
-        subscription-id: ${subscription-id}
+        client-id: '${client-id}'
+        tenant-id: '${tenant-id}'
+        subscription-id: '${subscription-id}'
 
 
     - name: Set up Node.js version
